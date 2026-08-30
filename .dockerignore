@@ -1,0 +1,7 @@
+node_modules
+tests
+compose.*
+*.md
+flake.nix
+flake.lock
+

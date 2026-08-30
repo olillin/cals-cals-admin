@@ -1,0 +1,22 @@
+# DO NOT USE IN PRODUCTION, THIS CONFIGURATION IS INTENTIONALLY INSECURE
+
+# This compose file runs the database for development.
+# Copy .env.example to get started.
+
+name: cals-cals-admin-dev
+
+services:
+    db:
+        image: postgres:18
+        restart: unless-stopped
+        user: postgres
+        environment:
+            - POSTGRES_DB=cals_cals_admin
+            - POSTGRES_PASSWORD=secret-dev-password
+        ports:
+            - '5432:5432'
+        healthcheck:
+            test: ['CMD', 'pg_isready']
+            interval: 10s
+            timeout: 5s
+            retries: 5

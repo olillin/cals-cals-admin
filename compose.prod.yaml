@@ -1,0 +1,46 @@
+# This is an example of how to run the app in production using secret files and
+# using the image from GitHub Packages.
+
+name: strecklista-backend
+
+services:
+    server:
+        image: 'ghcr.io/olillin/cals-cals-admin:latest'
+        restart: always
+        secrets:
+            - database-url
+        environment:
+            NODE_ENV: production
+            DATABASE_URL_FILE: /run/secrets/database-url
+
+        ports:
+            - '3000:3000'
+
+        depends_on:
+            db:
+                condition: service_healthy
+    db:
+        image: postgres:18
+        restart: always
+        user: postgres
+        secrets:
+            - postgres-password
+        volumes:
+            - db-data:/var/lib/postgresql
+        environment:
+            - POSTGRES_DB=cals_cals_admin
+            - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-password
+        expose:
+            - 5432
+        healthcheck:
+            test: ['CMD', 'pg_isready']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+volumes:
+    db-data:
+secrets:
+    database-url:
+        file: secrets/database-url.txt
+    postgres-password:
+        file: secrets/postgres-password.txt

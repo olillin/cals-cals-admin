@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+:root {
+    color-scheme: dark;
+}
+
+html {
+    background: #111111;
+    color: #ffffff;
+}
+
+body {
+    @apply bg-[#111111] text-white antialiased;
+    font-family: sans-serif;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+    font: inherit;
+}
