@@ -1,4 +1,4 @@
-import { Component, parseCalendar } from 'iamcal'
+import { CalendarEvent, Component, parseCalendar } from 'iamcal'
 import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
@@ -73,11 +73,19 @@ export async function fetchCalendarFile(
             component => component.name !== 'VEVENT'
         )
 
+        function hash(event: CalendarEvent): number {
+            const clone = new CalendarEvent(event)
+            clone.removePropertiesWithName('DTSTAMP')
+            return createHash('sha256')
+                .update(clone.serialize())
+                .digest()
+                .readInt32BE()
+        }
+
         events.sort(
             (a, b) =>
                 b.getStart().getDate().getTime() -
-                    a.getStart().getDate().getTime() ||
-                a.getUid().localeCompare(b.getUid())
+                    a.getStart().getDate().getTime() || hash(a) - hash(b)
         )
 
         const newCalendar = new Component(
