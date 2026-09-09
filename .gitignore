@@ -1,6 +1,7 @@
 .direnv
 .envrc
 temp/
+app/generated/
 
 .vscode/
 

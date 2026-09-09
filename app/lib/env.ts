@@ -6,6 +6,7 @@ export const defaultBaseUrl = 'http://localhost:3000'
 export const env = createEnv({
     server: {
         NODE_ENV: z.enum(['production', 'development', 'test']),
+        DATABASE_URL: z.string(),
     },
     shared: {
         BASE_URL: z
