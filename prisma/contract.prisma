@@ -1,8 +1,0 @@
-// use prisma-next
-
-model Calendar {
-  id    Int    @id @default(autoincrement())
-  filename String @unique
-  externalId String?
-}
-

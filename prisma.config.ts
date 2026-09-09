@@ -1,12 +1,19 @@
 import 'dotenv/config'
-import { defineConfig as ormConfig } from '@prisma/orm-postgres/config'
-import { definePrismaConfig } from 'prisma/config'
+import { readFileSync } from 'node:fs'
+import { defineConfig } from 'prisma/config'
 
-export default definePrismaConfig({
-    orm: ormConfig({
-        contract: './prisma/contract.prisma',
-        db: {
-            connection: process.env.DATABASE_URL!,
-        },
-    }),
+const databaseUrlFile: string | undefined = process.env.DATABASE_URL_FILE
+const databaseUrl: string | undefined =
+    process.env.DATABASE_URL ??
+    (databaseUrlFile ? readFileSync(databaseUrlFile, 'utf8') : undefined)
+
+export default defineConfig({
+    schema: 'prisma/schema.prisma',
+    migrations: {
+        path: 'prisma/migrations',
+        // seed: "tsx prisma/seed.ts",
+    },
+    datasource: {
+        url: databaseUrl!,
+    },
 })
