@@ -1,5 +1,6 @@
 .direnv
 .envrc
+secrets/
 temp/
 app/generated/
 data/calendars/*.ics

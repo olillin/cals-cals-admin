@@ -87,7 +87,6 @@ function unmark(text: string): string {
         const unmarkedLink = unmarkLink(link[0])
         const start = link.index
         const end = link[0].length
-        console.log(unmarkedLink)
         text = text.substring(0, start) + unmarkedLink + text.substring(end)
     })
 

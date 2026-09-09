@@ -1,12 +1,18 @@
+ARG NODE_VERSION=24.19.0
+
+FROM node:${NODE_VERSION}-alpine AS base
+
+ARG PRISMA_VERSION=7.10.0
+ARG WEB_VERSION
+
+# Set working directory
+WORKDIR /app
+
 # ============================================
 # Stage 1: Dependencies Installation Stage
 # ============================================
 
-ARG NODE_VERSION=24.19.0-slim
-FROM node:${NODE_VERSION} AS dependencies
-
-# Set working directory
-WORKDIR /app
+FROM base AS dependencies
 
 # Copy package-related files first to leverage Docker's caching mechanism
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -19,18 +25,16 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 # Stage 2: Build Next.js application in standalone mode
 # ============================================
 
-FROM node:${NODE_VERSION} AS builder
-
-ARG WEB_VERSION
-
-# Set working directory
-WORKDIR /app
+FROM base AS builder
 
 # Copy project dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
 
 # Copy application source code
 COPY . .
+
+# Generate the Prisma client
+RUN corepack enable pnpm && pnpm exec prisma generate
 
 ENV NODE_ENV=production
 
@@ -54,19 +58,38 @@ ENV SKIP_ENV_VALIDATION=1
 RUN --mount=type=cache,target=/app/.next/cache \
     corepack enable pnpm && pnpm build;
 
+# Setup Prisma environment
+
+# Remove dotenv import from prisma.config.ts
+RUN sed -i '/dotenv\/config/d' prisma.config.ts
+
+WORKDIR .next/standalone
+RUN mkdir prisma-cli
+
+# Copy Prisma, "type" and "devEngines" in package.json
+RUN apk add jq
+RUN jq '{type, dependencies: (.dependencies | {prisma}), devEngines}' package.json > prisma-cli/package.json
+
+WORKDIR prisma-cli
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml .
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    corepack enable pnpm && pnpm install;
+
+RUN cp -r /app/prisma ./prisma
+RUN cp /app/prisma.config.ts ./prisma.config.ts
+
 # ============================================
 # Stage 3: Run Next.js application
 # ============================================
 
-FROM node:${NODE_VERSION} AS runner
-
-# Set working directory
-WORKDIR /app
+FROM base AS runner
 
 # Set production environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV PRISMA_VERSION=${PRISMA_VERSION}
 
 # Disable Next.js anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -91,4 +114,4 @@ USER node
 EXPOSE 3000
 
 # Start Next.js standalone server
-CMD ["node", "server.js"]
+CMD ["/bin/sh", "-c", "cd prisma-cli && npx prisma migrate deploy && cd .. && node server.js"]

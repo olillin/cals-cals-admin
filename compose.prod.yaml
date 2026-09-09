@@ -5,17 +5,17 @@ name: cals-cals-admin
 
 services:
     server:
-        image: 'ghcr.io/olillin/cals-cals-admin:latest'
-        restart: always
+        image: 'ghcr.io/olillin/cals-cals-admin:main'
+        restart: unless-stopped
         secrets:
             - database-url
         environment:
             NODE_ENV: production
             DATABASE_URL_FILE: /run/secrets/database-url
-
+        volumes:
+            - ./data:/app/data
         ports:
             - '3000:3000'
-
         depends_on:
             db:
                 condition: service_healthy

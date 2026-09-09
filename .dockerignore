@@ -1,4 +1,7 @@
+.env*
 node_modules
+data
+secrets
 tests
 compose.*
 *.md
