@@ -8,7 +8,9 @@ calendar files from Google Calendar and scraping events from
 
 ```bash
 pnpm install
-docker compose up
+pnpm prisma generate
+docker compose up -d
+pnpm prisma migrate dev
 pnpm run dev
 ```
 
