@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
 
-export function createApiError(code: number, message: string) {
+export function createApiError(code: number, message: string): NextResponse {
     return NextResponse.json({ error: { message, code } }, { status: code })
 }

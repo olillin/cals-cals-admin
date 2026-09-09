@@ -193,7 +193,7 @@ function DeleteButton(props: { calendar: Calendar; onDelete?: () => void }) {
                     variant: 'warning',
                     actionProps: (
                         <Button variant="danger-soft" onClick={action}>
-                            "Try again"
+                            Try again
                         </Button>
                     ),
                     description: reason,

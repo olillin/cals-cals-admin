@@ -9,7 +9,7 @@ import {
     hashCalendar,
 } from '../lib/calendar'
 
-export async function deleteCalendar(id: number) {
+export async function deleteCalendar(id: number): Promise<void> {
     await prisma.calendar.delete({
         where: {
             id: id,
@@ -17,13 +17,15 @@ export async function deleteCalendar(id: number) {
     })
 }
 
-export async function createCalendar(input: CalendarCreateInput) {
+export async function createCalendar(
+    input: CalendarCreateInput
+): Promise<void> {
     await prisma.calendar.create({
         data: input,
     })
 }
 
-export async function updateCalendar(id: number) {
+export async function updateCalendar(id: number): Promise<void> {
     const calendar = await prisma.calendar.findFirst({
         where: { id: id },
         select: {

@@ -7,7 +7,7 @@ import {
     hashCalendar,
 } from '@/app/lib/calendar'
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
     const calendars = await getAllCalendars()
 
     const calendarsWithHashes = await Promise.all(

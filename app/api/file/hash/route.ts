@@ -4,7 +4,7 @@ import { createApiError } from '@/app/lib/api'
 import { readCalendarFileHash } from '@/app/lib/calendar'
 import { filenamePattern } from '@/app/lib/patterns'
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
     const filename = req.nextUrl.searchParams.get('filename')
     if (!filename) {
         return createApiError(400, "Missing required parameter 'filename'")

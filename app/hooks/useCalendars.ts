@@ -22,11 +22,14 @@ export function useCalendars(): [
         typeof calendarsSchema
     >>(null)
 
-    function refreshCalendars() {
+    function refreshCalendars(): void {
         fetch('/api/calendars')
             .then(res => res.json())
             .then(json => calendarsSchema.parse(json))
             .then(value => setCalendars(value))
+            .catch(reason => {
+                console.error(reason)
+            })
     }
 
     useEffect(() => {

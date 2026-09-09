@@ -1,4 +1,4 @@
-import { Component, deserializeComponentString, parseCalendar } from 'iamcal'
+import { Component, parseCalendar } from 'iamcal'
 import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
