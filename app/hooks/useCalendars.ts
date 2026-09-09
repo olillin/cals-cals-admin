@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import z from 'zod'
 
-import { Calendar } from '@/app/generated/prisma/client'
-
 const calendarsSchema = z.array(
     z.object({
         id: z.int(),
         filename: z.string(),
         externalUrl: z.url().or(z.null()),
+        remoteHash: z.string().or(z.null()),
         hash: z.string(),
         pickerId: z.int().or(z.null()),
         createdAt: z.coerce.date(),
@@ -15,8 +14,13 @@ const calendarsSchema = z.array(
     })
 )
 
-export function useCalendars(): [null | Calendar[], () => void] {
-    const [calendars, setCalendars] = useState<null | Calendar[]>(null)
+export function useCalendars(): [
+    null | z.infer<typeof calendarsSchema>,
+    () => void,
+] {
+    const [calendars, setCalendars] = useState<null | z.infer<
+        typeof calendarsSchema
+    >>(null)
 
     function refreshCalendars() {
         fetch('/api/calendars')

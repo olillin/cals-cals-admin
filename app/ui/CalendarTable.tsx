@@ -2,10 +2,14 @@
 
 import { AlertDialog, Button, toast } from '@heroui/react'
 import clsx from 'clsx'
-import { CloudSync, Copy, Plus, Trash } from 'lucide-react'
-import { ReactNode, useRef } from 'react'
+import { CloudSync, Plus, Trash } from 'lucide-react'
+import { ReactNode } from 'react'
 
-import { createCalendar, deleteCalendar } from '@/app/actions/calendar'
+import {
+    createCalendar,
+    deleteCalendar,
+    updateCalendar,
+} from '@/app/actions/calendar'
 import { Calendar } from '@/app/generated/prisma/client'
 
 import { useCalendars } from '../hooks/useCalendars'
@@ -59,10 +63,13 @@ export default function CalendarTable() {
                                 {prettyFormatDate(calendar.createdAt)}
                             </TableCell>
                             <TableCell className="flex justify-end gap-2">
-                                <UpdateButton
-                                    calendar={calendar}
-                                    onUpdate={refreshCalendars}
-                                />
+                                {calendar.externalUrl &&
+                                    calendar.hash !== calendar.remoteHash && (
+                                        <UpdateButton
+                                            calendar={calendar}
+                                            onUpdate={refreshCalendars}
+                                        />
+                                    )}
                                 <DeleteButton
                                     calendar={calendar}
                                     onDelete={refreshCalendars}
@@ -87,7 +94,7 @@ export default function CalendarTable() {
 
                                 toast('Failed to create calendar', {
                                     variant: 'warning',
-                                    description: reason,
+                                    description: reason.toString(),
                                 })
                             })
                     }}
@@ -136,13 +143,28 @@ function TableCell(props: { children?: ReactNode; className?: string }) {
 }
 
 function UpdateButton(props: { calendar: Calendar; onUpdate?: () => void }) {
+    function action() {
+        updateCalendar(props.calendar.id)
+            .then(() => {
+                toast.success(
+                    <span>
+                        Calendar <strong>{props.calendar.filename}</strong> has
+                        been updated
+                    </span>
+                )
+                props.onUpdate?.()
+            })
+            .catch(reason => {
+                console.warn(`Calendar could not be updated: ${reason}`)
+
+                toast('Calendar failed to be updated', {
+                    variant: 'warning',
+                    description: reason.toString(),
+                })
+            })
+    }
     return (
-        <Button
-            variant="primary"
-            onClick={() => {
-                console.log('TODO')
-            }}
-        >
+        <Button variant="primary" onClick={action}>
             <CloudSync />
             Update
         </Button>

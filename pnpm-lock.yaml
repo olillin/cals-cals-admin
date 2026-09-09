@@ -231,6 +231,9 @@ importers:
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
+      iamcal:
+        specifier: ^4.1.2
+        version: 4.1.2
       lucide-react:
         specifier: ^1.42.0
         version: 1.42.0(react@19.2.8)
@@ -1906,6 +1909,9 @@ packages:
   graphmatch@1.1.1:
     resolution: {integrity: sha512-5ykVn/EXM1hF0XCaWh05VbYvEiOL2lY1kBxZtaYsyvjp7cmWOU1XsAdfQBwClraEofXDT197lFbXOEVMHpvQOg==}
 
+  iamcal@4.1.2:
+    resolution: {integrity: sha512-Pwb1nzTSEK/jTiegrYmRR9ZbuszqX9IvrXEGCzMQrr9HmqvAEONVi2nXHv9QHN3GEmTfz8mWmy+NyJQrQws19Q==}
+
   iconv-lite@0.7.3:
     resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
@@ -2369,6 +2375,9 @@ packages:
   tapable@2.3.3:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
+
+  timezones-ical-library@2.3.1:
+    resolution: {integrity: sha512-CUwoh7kQik+oy1YIl4+Mwrx5xCRO0n2+c6y0OpQf0l/tCJjNJomGQMK6CeLKSjACapp6bcn944wzGDEqJbk2aw==}
 
   tinypool@2.1.0:
     resolution: {integrity: sha512-Pugqs6M0m7Lv1I7FtxN4aoyToKg1C4tu+/381vH35y8oENM/Ai7f7C4StcoK4/+BSw9ebcS8jRiVrORFKCALLw==}
@@ -3741,6 +3750,10 @@ snapshots:
 
   graphmatch@1.1.1: {}
 
+  iamcal@4.1.2:
+    dependencies:
+      timezones-ical-library: 2.3.1
+
   iconv-lite@0.7.3:
     dependencies:
       safer-buffer: 2.1.2
@@ -4209,6 +4222,8 @@ snapshots:
   tailwindcss@4.3.3: {}
 
   tapable@2.3.3: {}
+
+  timezones-ical-library@2.3.1: {}
 
   tinypool@2.1.0: {}
 

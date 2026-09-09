@@ -11,12 +11,14 @@ import {
     TextField,
     toast,
 } from '@heroui/react'
-import { CalendarPlus, CircleX } from 'lucide-react'
+import { CalendarPlus } from 'lucide-react'
 import { ReactNode } from 'react'
 
 import { CalendarCreateInput } from '@/app/generated/prisma/models'
 
-function getFileHash(filename: string) {
+import { filenamePattern } from '../lib/patterns'
+
+async function getFileHash(filename: string) {
     return fetch(`/api/file/hash?filename=${filename}`)
         .then(response => response.json())
         .then(data => {
@@ -41,8 +43,7 @@ export default function NewCalendarModal(props: {
             const filename = formData.get('filename')!.toString()
             const hash = await getFileHash(filename).catch(reason => {
                 toast('Failed to get hash', {
-                    variant: 'danger',
-                    indicator: <CircleX />,
+                    variant: 'warning',
                     description: reason,
                 })
             })
@@ -85,7 +86,7 @@ export default function NewCalendarModal(props: {
                                                     type="text"
                                                     validate={value => {
                                                         if (
-                                                            !/^[A-Z0-9._-]+$/i.test(
+                                                            !filenamePattern.test(
                                                                 value
                                                             )
                                                         ) {

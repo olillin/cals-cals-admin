@@ -2,6 +2,7 @@
 .envrc
 temp/
 app/generated/
+data/calendars/*.ics
 
 .vscode/
 
