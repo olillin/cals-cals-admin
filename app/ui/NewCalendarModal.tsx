@@ -14,20 +14,20 @@ import {
 import { CalendarPlus } from 'lucide-react'
 import { ReactNode } from 'react'
 
+import { responseSchema as hashResponseSchema } from '@/app/api/file/hash/schema'
 import { CalendarCreateInput } from '@/app/generated/prisma/models'
 
+import { isApiError } from '../lib/api'
 import { filenamePattern } from '../lib/patterns'
 
-async function getFileHash(filename: string) {
-    return fetch(`/api/file/hash?filename=${filename}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                throw new Error(data.error.message)
-            } else {
-                return data.hash
-            }
-        })
+async function getFileHash(filename: string): Promise<string> {
+    const response = await fetch(`/api/file/hash?filename=${filename}`)
+    const json: unknown = await response.json()
+    const data = hashResponseSchema.parse(json)
+    if (isApiError(data)) {
+        throw new Error(data.error.message)
+    }
+    return data.hash
 }
 
 export default function NewCalendarModal(props: {
@@ -44,9 +44,14 @@ export default function NewCalendarModal(props: {
             const hash = await getFileHash(filename).catch(reason => {
                 toast('Failed to get hash', {
                     variant: 'warning',
-                    description: reason,
+                    description: String(reason),
                 })
+                return null
             })
+            if (hash == null) {
+                return
+            }
+
             const externalUrl = formData.get('url')!.toString() || null
 
             props.onCreate?.({
