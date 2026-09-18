@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import z from 'zod'
 
-const calendarsSchema = z.array(
+export const calendarsSchema = z.array(
     z.object({
         id: z.int(),
         filename: z.string(),
@@ -14,10 +14,9 @@ const calendarsSchema = z.array(
     })
 )
 
-export function useCalendars(): [
-    null | z.infer<typeof calendarsSchema>,
-    () => void,
-] {
+export type Calendars = z.infer<typeof calendarsSchema>
+
+export function useCalendars(): [null | Calendars, () => void] {
     const [calendars, setCalendars] = useState<null | z.infer<
         typeof calendarsSchema
     >>(null)

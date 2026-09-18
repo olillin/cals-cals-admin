@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertDialog, Button, toast } from '@heroui/react'
+import { AlertDialog, Button, toast, Badge } from '@heroui/react'
 import clsx from 'clsx'
 import { CloudSync, Plus, Trash } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -12,10 +12,16 @@ import {
 } from '@/app/actions/calendar'
 import { Calendar } from '@/app/generated/prisma/client'
 
-import { useCalendars } from '../hooks/useCalendars'
+import { Calendars, useCalendars } from '../hooks/useCalendars'
 import { prettyFormatDate } from '../lib/util'
 import { CopyBox } from './CopyBox'
 import NewCalendarModal from './NewCalendarModal'
+
+function calendarHasUpdate(calendar: Calendars[number]): boolean {
+    return (
+        calendar.externalUrl !== null && calendar.remoteHash !== calendar.hash
+    )
+}
 
 export default function CalendarTable() {
     const [calendars, refreshCalendars] = useCalendars()
@@ -35,7 +41,14 @@ export default function CalendarTable() {
                         <TableHeader>URL</TableHeader>
                         <TableHeader>Updated</TableHeader>
                         <TableHeader>Created</TableHeader>
-                        <TableHeader></TableHeader>
+                        <TableHeader>
+                            {calendars.find(calendarHasUpdate) && (
+                                <UpdateAllButton
+                                    calendars={calendars}
+                                    onUpdate={refreshCalendars}
+                                />
+                            )}
+                        </TableHeader>
                     </TableRow>
                 </thead>
 
@@ -63,13 +76,12 @@ export default function CalendarTable() {
                                 {prettyFormatDate(calendar.createdAt)}
                             </TableCell>
                             <TableCell className="flex justify-end gap-2">
-                                {calendar.externalUrl &&
-                                    calendar.hash !== calendar.remoteHash && (
-                                        <UpdateButton
-                                            calendar={calendar}
-                                            onUpdate={refreshCalendars}
-                                        />
-                                    )}
+                                {calendarHasUpdate(calendar) && (
+                                    <UpdateButton
+                                        calendar={calendar}
+                                        onUpdate={refreshCalendars}
+                                    />
+                                )}
                                 <DeleteButton
                                     calendar={calendar}
                                     onDelete={refreshCalendars}
@@ -168,6 +180,55 @@ function UpdateButton(props: { calendar: Calendar; onUpdate?: () => void }) {
             <CloudSync />
             Update
         </Button>
+    )
+}
+
+function UpdateAllButton(props: {
+    calendars: Calendars
+    onUpdate?: () => void
+}) {
+    async function action() {
+        for (const calendar of props.calendars) {
+            if (!calendarHasUpdate(calendar)) {
+                continue
+            }
+            console.log(`Updating all (${calendar.filename})`)
+
+            await updateCalendar(calendar.id)
+                .then(() => {
+                    toast.success(
+                        <span>
+                            Calendar <strong>{calendar.filename}</strong> has
+                            been updated
+                        </span>
+                    )
+                    props.onUpdate?.()
+                })
+                .catch(reason => {
+                    console.warn(`Calendar could not be updated: ${reason}`)
+
+                    toast('Calendar failed to be updated', {
+                        variant: 'warning',
+                        description: reason.toString(),
+                    })
+                })
+        }
+    }
+
+    const updatesAvailable = props.calendars.filter(calendarHasUpdate).length
+
+    return (
+        <Badge.Anchor>
+            <Button variant="primary" onClick={action}>
+                <CloudSync />
+                Update all
+                {updatesAvailable && (
+                    <Badge color="warning" size="sm" variant="primary">
+                        {updatesAvailable}
+                    </Badge>
+                )}
+            </Button>
+        </Badge.Anchor>
     )
 }
 

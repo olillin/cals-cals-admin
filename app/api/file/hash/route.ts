@@ -4,6 +4,8 @@ import { createApiError } from '@/app/lib/api'
 import { readCalendarFileHash } from '@/app/lib/calendar'
 import { filenamePattern } from '@/app/lib/patterns'
 
+import { responseSchema } from './schema'
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const filename = req.nextUrl.searchParams.get('filename')
     if (!filename) {
@@ -17,5 +19,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         return createApiError(500, `Failed to get hash: ${reason}`)
     })
 
-    return NextResponse.json({ hash })
+    if (typeof hash !== 'string') {
+        // Return error
+        return hash
+    }
+
+    const body: unknown = { hash }
+    return NextResponse.json(responseSchema.parse(body))
 }
