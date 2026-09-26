@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ToastProvider } from '@heroui/react'
 
-import { PageFooter } from '@/app/ui/PageFooter'
-import { PageNavigation } from '@/app/ui/PageNavigation'
+import { PageFooter } from '@/ui/PageFooter'
+import { PageNavigation } from '@/ui/PageNavigation'
 
 export const metadata: Metadata = {
     title: "Cal's Cals Admin Panel",

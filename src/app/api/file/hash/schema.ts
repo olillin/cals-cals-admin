@@ -1,6 +1,6 @@
 import z from 'zod'
 
-import { errorSchema } from '@/app/lib/api'
+import { errorSchema } from '@/lib/api'
 
 export const responseSchema = z
     .object({

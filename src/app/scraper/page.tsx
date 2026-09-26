@@ -1,5 +1,5 @@
-import { getLatestPosts } from '@/app/lib/scraper'
-import { CalendarDraft } from '@/app/ui/CalendarDraft'
+import { getLatestPosts } from '@/lib/scraper'
+import { CalendarDraft } from '@/ui/CalendarDraft'
 
 export default async function HomePage() {
     const posts = await getLatestPosts(8)

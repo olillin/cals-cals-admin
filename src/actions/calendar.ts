@@ -1,7 +1,8 @@
 'use server'
 
-import { CalendarCreateInput } from '@/app/generated/prisma/models'
-import { prisma } from '@/app/lib/prisma'
+import type { CalendarCreateInput } from '@/generated/prisma/models'
+
+import { prisma } from '@/lib/prisma'
 
 import {
     fetchCalendarFile,

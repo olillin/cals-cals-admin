@@ -26,7 +26,7 @@
     },
     "sortPackageJson": true,
     "sortTailwindcss": {
-        "stylesheet": "./app/globals.css",
+        "stylesheet": "./src/app/globals.css",
         "functions": ["clsx", "cn"],
         "preserveWhitespace": true
     },

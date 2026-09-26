@@ -1,4 +1,5 @@
 .env*
+src/generated
 node_modules
 data
 secrets

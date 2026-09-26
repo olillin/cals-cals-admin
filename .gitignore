@@ -2,7 +2,7 @@
 .envrc
 secrets/
 temp/
-app/generated/
+src/generated/
 data/calendars/*.ics
 
 .vscode/

@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 
-import { Calendar } from '@/app/generated/prisma/client'
+import type { Calendar } from '@/generated/prisma/client'
+
 import {
     fetchCalendarFile,
     getAllCalendars,
     hashCalendar,
-} from '@/app/lib/calendar'
+} from '@/lib/calendar'
 
 export async function GET(): Promise<NextResponse> {
     const calendars = await getAllCalendars()

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { createApiError } from '@/app/lib/api'
-import { readCalendarFileHash } from '@/app/lib/calendar'
-import { filenamePattern } from '@/app/lib/patterns'
+import { createApiError } from '@/lib/api'
+import { readCalendarFileHash } from '@/lib/calendar'
+import { filenamePattern } from '@/lib/patterns'
 
 import { responseSchema } from './schema'
 

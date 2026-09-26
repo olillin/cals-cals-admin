@@ -1,19 +1,21 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { AlertDialog, Button, toast, Badge } from '@heroui/react'
 import clsx from 'clsx'
 import { CloudSync, Plus, Trash } from 'lucide-react'
-import { ReactNode } from 'react'
+
+import type { Calendar } from '@/generated/prisma/client'
 
 import {
     createCalendar,
     deleteCalendar,
     updateCalendar,
-} from '@/app/actions/calendar'
-import { Calendar } from '@/app/generated/prisma/client'
+} from '@/actions/calendar'
+import { type Calendars, useCalendars } from '@/hooks/useCalendars'
+import { prettyFormatDate } from '@/lib/util'
 
-import { Calendars, useCalendars } from '../hooks/useCalendars'
-import { prettyFormatDate } from '../lib/util'
 import { CopyBox } from './CopyBox'
 import NewCalendarModal from './NewCalendarModal'
 
@@ -99,14 +101,14 @@ export default function CalendarTable() {
                             .then(() => {
                                 refreshCalendars()
                             })
-                            .catch(reason => {
+                            .catch((reason: unknown) => {
                                 console.warn(
-                                    `Calendar could not be created: ${reason}`
+                                    `Calendar could not be created: ${String(reason)}`
                                 )
 
                                 toast('Failed to create calendar', {
                                     variant: 'warning',
-                                    description: reason.toString(),
+                                    description: String(reason),
                                 })
                             })
                     }}
@@ -166,12 +168,12 @@ function UpdateButton(props: { calendar: Calendar; onUpdate?: () => void }) {
                 )
                 props.onUpdate?.()
             })
-            .catch(reason => {
-                console.warn(`Calendar could not be updated: ${reason}`)
+            .catch((reason: unknown) => {
+                console.warn(`Calendar could not be updated: ${String(reason)}`)
 
                 toast('Calendar failed to be updated', {
                     variant: 'warning',
-                    description: reason.toString(),
+                    description: String(reason),
                 })
             })
     }
@@ -204,12 +206,14 @@ function UpdateAllButton(props: {
                     )
                     props.onUpdate?.()
                 })
-                .catch(reason => {
-                    console.warn(`Calendar could not be updated: ${reason}`)
+                .catch((reason: unknown) => {
+                    console.warn(
+                        `Calendar could not be updated: ${String(reason)}`
+                    )
 
                     toast('Calendar failed to be updated', {
                         variant: 'warning',
-                        description: reason.toString(),
+                        description: String(reason),
                     })
                 })
         }
@@ -247,8 +251,8 @@ function DeleteButton(props: { calendar: Calendar; onDelete?: () => void }) {
                 )
                 props.onDelete?.()
             })
-            .catch(reason => {
-                console.warn(`Calendar could not be deleted: ${reason}`)
+            .catch((reason: unknown) => {
+                console.warn(`Calendar could not be deleted: ${String(reason)}`)
 
                 toast('Calendar failed to be deleted', {
                     variant: 'warning',
@@ -257,7 +261,7 @@ function DeleteButton(props: { calendar: Calendar; onDelete?: () => void }) {
                             Try again
                         </Button>
                     ),
-                    description: reason,
+                    description: String(reason),
                 })
             })
     }

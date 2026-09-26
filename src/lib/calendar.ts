@@ -3,11 +3,10 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
 
-import type { Calendar } from '@/app/generated/prisma/client'
+import type { Calendar } from '@/generated/prisma/client'
 
-import { prisma } from '@/app/lib/prisma'
-
-import { filenamePattern } from './patterns'
+import { filenamePattern } from '@/lib/patterns'
+import { prisma } from '@/lib/prisma'
 
 export async function getAllCalendars(): Promise<Calendar[]> {
     return prisma.calendar.findMany({ orderBy: { id: 'asc' } })

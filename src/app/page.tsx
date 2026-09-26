@@ -1,4 +1,4 @@
-import CalendarTable from './ui/CalendarTable'
+import CalendarTable from '@/ui/CalendarTable'
 
 export default async function Page() {
     return (

@@ -6,9 +6,8 @@ import {
     createEventDraft,
     createGoogleCalendarUrl,
     type Post,
-} from '@/app/lib/scraper'
-
-import { prettyFormatDate } from '../lib/util'
+} from '@/lib/scraper'
+import { prettyFormatDate } from '@/lib/util'
 
 export function CalendarDraft({ posts }: { posts: Post[] }) {
     const [selectedId, setSelectedId] = useState<number>(posts[0]?.id ?? 0)
